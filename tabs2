@@ -1,0 +1,31 @@
+<Style TargetType="{x:Type TabItem}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Grid Margin="0,0,-12,0">
+                            <!--Самостоятельная проба создать вкладки-->
+                            <Border Name="Border" Background="Transparent" BorderBrush="Transparent"
+                                    BorderThickness="1,1,1,1" CornerRadius="6,6,0,0" />
+                            <Path Name="Blablabla" Data="M0.5,3.5 C0.5,1.8431458 1.8431458,0.5 3.5,0.5 L46.5,0.5 C48.156854,0.5 75.082788,25.5 70.333333,25.5 65.583878,25.5 0.75000088,25.249498 0.5,25.583056 0.24999912,25.916615 0.5,10.944442 0.5,3.5 z" 
+              Fill="Black" HorizontalAlignment="Left" Height="26.089" Stretch="Fill" Stroke="White" 
+              VerticalAlignment="Bottom"  Width="110"/>
+                            <ContentPresenter x:Name="ContentSite" TextElement.Foreground="White" ContentSource="Header" VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" Margin="0,0,18,0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="Orange" />
+                                <Setter Property="Panel.ZIndex" Value="100" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="false">
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="White"/>
+                                <Setter TargetName="Border" Property="Background" Value="Transparent"/>
+
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
