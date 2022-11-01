@@ -6,7 +6,37 @@
         x:Name="frmMain" x:Class="SkyRider_WPF.MainWindow"
         mc:Ignorable="d"
         Title="SkyRider" Height="556.2" Width="1022" WindowState="Maximized" Loaded="frmMain_Loaded">
-
+    <Window.Resources>
+        <Style x:Key="MainGrid" TargetType="DataGrid">
+            <!--<Setter Property="UseLayoutRounding" Value="True"/>-->
+            <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="RowHeight" Value="40"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VerticalGridLinesBrush" Value="White"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="AliceBlue"/>
+            
+        </Style>
+        <Style x:Key="Body_Content_DataGrid_Centering"
+        TargetType="{x:Type DataGridCell}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CellTextCentre" TargetType="DataGridCell">
+            
+            <Setter Property="TextBlock.VerticalAlignment" Value="Center"></Setter>
+        </Style>
+    </Window.Resources>
     <Grid x:Name="grdMain" ShowGridLines="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -50,8 +80,9 @@
             <TabItem Header="Основная база" Height="40" Width="200">
                 
                 <Grid Background="White" >
-                    <DataGrid x:Name="usersGrid" ItemsSource="{Binding}" UseLayoutRounding="True" RenderOptions.EdgeMode="Aliased"  Foreground="Black" Background="White" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                    
+                    <DataGrid x:Name="usersGrid" Style="{StaticResource MainGrid}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}"/>
+
+
                 </Grid>
 
 
@@ -67,7 +98,7 @@
                             </DataTemplate>
                         </DataGrid.RowHeaderTemplate>
                         <DataGrid.Columns>
-                            <DataGridTextColumn IsReadOnly="True" Width="80" CanUserResize="False" Binding="{Binding Index}" Header="Index"/>
+                            <DataGridTextColumn IsReadOnly="True" Width="80" CanUserResize="False" Binding="{Binding Id}" Header="Id"/>
                             <DataGridTemplateColumn Width="60" CanUserResize="False">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>

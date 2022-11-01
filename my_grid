@@ -1,0 +1,1 @@
+UseLayoutRounding="True" RenderOptions.EdgeMode="Aliased"  Foreground="Black" Background="White" Margin="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0"  VerticalGridLinesBrush="White" HorizontalGridLinesBrush="White" RowHeight="40"
