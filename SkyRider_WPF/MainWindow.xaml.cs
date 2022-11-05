@@ -62,7 +62,29 @@ namespace SkyRider_WPF
                 MySqlDataAdapter adapter = new MySqlDataAdapter(command);
                 adapter.Fill(dtUsers);
                 usersGrid.ItemsSource = dtUsers.DefaultView;
-                usersGrid2.ItemsSource = dtUsers.DefaultView;
+                //usersGrid2.ItemsSource = dtUsers.DefaultView;
+                //usersGrid.SelectedIndex = 0;
+
+                //tbsMain.Focusable = true;
+                //tbsMain.Focus();
+                //usersGrid.ColumnWidth = System.Windows.Controls.DataGridLength.Auto;
+
+                //SelectRowByIndex(usersGrid, 2);
+
+                //usersGrid.CanUserResizeColumns = false;
+                usersGrid.Focusable = true;
+                usersGrid.SelectedIndex = 0;
+                //usersGrid.TabIndex = 0;
+                //usersGrid.SelectionUnit = System.Windows.Controls.DataGridSelectionUnit.Cell;
+                usersGrid.Focus();
+                usersGrid.Columns[0].Visibility = Visibility.Collapsed;
+                //SelectRowByIndex(usersGrid, 0);
+
+
+                //usersGrid.MoveFocus();
+                //usersGrid.SelectedIndex = 0;
+                //usersGrid.Focus();
+                //usersGrid.setf
             }
 
 
@@ -97,6 +119,46 @@ namespace SkyRider_WPF
                 if (skycon != null)
                     skycon.Close();
            }
+        }
+
+        private void frmMain_Activated(object sender, EventArgs e)
+        {
+            //tbsMain.Focus();
+            //usersGrid.Focus();
+        }
+
+        private void frmMain_GotFocus(object sender, RoutedEventArgs e)
+        {
+            //usersGrid.Focus();
+        }
+
+        public static void SelectRowByIndex(System.Windows.Controls.DataGrid dataGrid, int rowIndex)
+        {
+            if (!dataGrid.SelectionUnit.Equals(System.Windows.Controls.DataGridSelectionUnit.FullRow))
+                throw new ArgumentException("The SelectionUnit of the DataGrid must be set to FullRow.");
+
+            if (rowIndex < 0 || rowIndex > (dataGrid.Items.Count - 1))
+                throw new ArgumentException(string.Format("{0} is an invalid row index.", rowIndex));
+
+            dataGrid.SelectedItems.Clear();
+            /* set the SelectedItem property */
+            object item = dataGrid.Items[rowIndex]; // = Product X
+            dataGrid.SelectedItem = item;
+
+            System.Windows.Controls.DataGridRow row = dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex) as System.Windows.Controls.DataGridRow;
+            if (row == null)
+            {
+                /* bring the data item (Product object) into view
+                 * in case it has been virtualized away */
+                dataGrid.ScrollIntoView(item);
+                row = dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex) as System.Windows.Controls.DataGridRow;
+            }
+            //TODO: Retrieve and focus a DataGridCell object
+        }
+
+        private void usersGrid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            MessageBox.Show(e.ToString());
         }
     }
 }

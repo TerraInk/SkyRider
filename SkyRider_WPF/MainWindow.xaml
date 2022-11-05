@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Name="frmMain" x:Class="SkyRider_WPF.MainWindow"
         mc:Ignorable="d"
-        Title="SkyRider" Height="556.2" Width="1022" WindowState="Maximized" Loaded="frmMain_Loaded">
+        Title="SkyRider" Height="556.2" Width="1022" WindowStyle="None" WindowState="Maximized" Loaded="frmMain_Loaded" Activated="frmMain_Activated" GotFocus="frmMain_GotFocus">
     <Window.Resources>
         <Style x:Key="MainGrid" TargetType="DataGrid">
             <!--<Setter Property="UseLayoutRounding" Value="True"/>-->
+            <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Background" Value="White"/>
@@ -16,9 +17,12 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="VerticalGridLinesBrush" Value="White"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+<!--            <Setter Property="VerticalGridLinesBrush" Value="White"/>-->
             <Setter Property="HorizontalGridLinesBrush" Value="AliceBlue"/>
             
+            
+
         </Style>
         <Style x:Key="Body_Content_DataGrid_Centering"
         TargetType="{x:Type DataGridCell}">
@@ -33,19 +37,57 @@
             </Setter>
         </Style>
         <Style x:Key="CellTextCentre" TargetType="DataGridCell">
-            
             <Setter Property="TextBlock.VerticalAlignment" Value="Center"></Setter>
         </Style>
+        
+        <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FF6B8E95" Offset="0"/>
+            <GradientStop Color="#FF14A7C1" Offset="1"/>
+            <GradientStop Color="#FF1E424E" Offset="0.509"/>
+            <GradientStop Color="#FF1D4855" Offset="0.542"/>
+            <GradientStop Color="#FF1D4855" Offset="0.542"/>
+            <GradientStop Color="#FF193A44" Offset="0.526"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HeaderBorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FF1D1D1D" Offset="0.614"/>
+            <GradientStop Color="#FF007F96" Offset="0.853"/>
+            <GradientStop Color="#FF0AEAFA" Offset="1"/>
+        </LinearGradientBrush>
+
+        <Style x:Key="HeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="Cursor" Value="Hand" />
+            
+        </Style>
+
+
+
     </Window.Resources>
+    
+    
     <Grid x:Name="grdMain" ShowGridLines="False">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="Header" Margin="0,0,0,5" Background="WhiteSmoke" Height="50" Grid.Row="0" VerticalAlignment="Top"/>
-     
-        <TabControl x:Name="tbsMain" Margin="1" Grid.Row="1" Height="Auto" FontFamily="Roboto" FontSize="18" BorderThickness="0" Background="White">
+        <!--<StackPanel x:Name="Header" Margin="0,0,0,5" Background="White" Height="50" Grid.Row="0" VerticalAlignment="Top"/> -->
+        <DockPanel x:Name="Header">
+            <Border CornerRadius="2" BorderBrush="LightGray" BorderThickness="1" Background="AliceBlue">
+                
+            </Border>    
+        </DockPanel>
+        
+        <TabControl x:Name="tbsMain" Margin="1,7,1,10" Grid.Row="1" Height="Auto" FontFamily="Roboto" FontSize="18" BorderThickness="0" Background="White" IsTabStop="False">
 
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
@@ -75,12 +117,116 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            
 
-            <TabItem Header="Основная база" Height="40" Width="200">
-                
-                <Grid Background="White" >
-                    <DataGrid x:Name="usersGrid" Style="{StaticResource MainGrid}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}"/>
+
+            <TabItem Header="Основная база" Height="40" Width="200" IsTabStop="False">
+
+                <Grid Background="White" Margin="5,15,1,1">
+                    <DataGrid x:Name="usersGrid" AutoGenerateColumns="False" Style="{StaticResource MainGrid}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" ColumnHeaderStyle="{StaticResource HeaderStyle}" TextOptions.TextFormattingMode="Display" BorderThickness="0" KeyDown="usersGrid_KeyDown">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="id" Binding="{Binding Path=id}"/>
+                            <DataGridCheckBoxColumn Header=" " Width="30"/>
+                            
+                            <DataGridTextColumn Header="Имя"  Width="350" Binding="{Binding Path=fname}">
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Дата" Width="100" Binding="{Binding Path=birthday,StringFormat={}{0:dd.MM.yyyy}}">
+                            
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                                
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                        <Setter Property="Margin" Value="0,0,7,0"/>
+
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                
+                            </DataGridTextColumn>
+                            
+                            <DataGridTextColumn Header="GMT" Width="100" Binding="{Binding Path=birthtime}">
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                        <Setter Property="Margin" Value="0,0,7,0"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Город" Width="180" Binding="{Binding Path=cityname}">
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Долгота" Width="80" Binding="{Binding Path=longitude,StringFormat={}{0:00.00}}">
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                        <Setter Property="FontFamily" Value="PT Mono" />
+                                        <Setter Property="FontSize" Value="18"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Широта" Width="80" Binding="{Binding Path=latitude,StringFormat={}{0:00.00}}">
+                                <DataGridTextColumn.HeaderStyle>
+                                    <Style TargetType="DataGridColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                        <Setter Property="Background" Value="White" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                                        <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+
+                                    </Style>
+                                </DataGridTextColumn.HeaderStyle>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                        <Setter Property="FontFamily" Value="PT Mono" />
+                                        <Setter Property="FontSize" Value="18"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+
+                        </DataGrid.Columns>
+                    </DataGrid>
 
 
                 </Grid>
@@ -92,28 +238,22 @@
                 
                 <Grid Background="White">
                     <DataGrid x:Name="usersGrid2" HeadersVisibility="All" RowHeaderWidth="60" AutoGenerateColumns="False" ItemsSource="{Binding DataList}">
-                        <DataGrid.RowHeaderTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
-                            </DataTemplate>
-                        </DataGrid.RowHeaderTemplate>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn IsReadOnly="True" Width="80" CanUserResize="False" Binding="{Binding Id}" Header="Id"/>
-                            <DataGridTemplateColumn Width="60" CanUserResize="False">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Image Source="{Binding ImgPath}" Width="32" Height="32" Stretch="Uniform"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Width="1*" Binding="{Binding Name}" Header="Name"/>
-                            <DataGridCheckBoxColumn Width="100" CanUserResize="False" Binding="{Binding IsSelected}" Header="Selected"/>
-                            <DataGridTextColumn Width="1*" Binding="{Binding Remark}" Header="Remark"/>
-                        </DataGrid.Columns>
+
                     </DataGrid>
 
                 </Grid>
             </TabItem>
+            
+            <TabItem Header="Временная" Height="40" Width="200">
+                <Grid Background="White">
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Затмения" Height="40" Width="200">
+                <Grid Background="White">
+                </Grid>
+            </TabItem>
+            
         </TabControl>
 
     </Grid>
