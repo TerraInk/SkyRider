@@ -1,0 +1,26 @@
+<StackPanel Margin="10">
+        <Label Width="auto" Height="38" BorderThickness="0,0,0,1" BorderBrush="AliceBlue">
+            <TextBlock TextWrapping="Wrap" Text="Данные" FontFamily="Roboto" FontSize="22"/>
+        </Label>
+    </StackPanel>
+
+
+
+
+        <StackPanel Margin="10,10,0,0"  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
+            <Label Width="auto" Height="38" BorderThickness="0,0,0,1" BorderBrush="AliceBlue">
+                <TextBlock TextWrapping="Wrap" Text="Данные" FontFamily="Roboto" FontSize="22"/>
+            </Label>
+        </StackPanel>
+
+        <StackPanel Margin="10,0,0,0"  Grid.Column="0" Grid.Row="1">
+            <Label Width="auto" Height="auto" BorderThickness="0,0,0,0" BorderBrush="AliceBlue">
+                <TextBlock TextWrapping="Wrap" Text="Ф.И.О." FontFamily="Roboto" FontSize="18"/>
+            </Label>
+        </StackPanel>
+        
+        <StackPanel Margin="0,0,0,0"  Grid.Column="1" Grid.Row="1">
+            <Label Width="auto" Height="auto">
+                <TextBox TextWrapping="Wrap" Text="" FontFamily="Roboto" FontSize="18"/>
+            </Label>
+        </StackPanel>

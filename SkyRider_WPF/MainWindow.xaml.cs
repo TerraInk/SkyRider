@@ -44,11 +44,15 @@ namespace SkyRider_WPF
             InitializeComponent();
             // получаем строку подключения из app.config
             connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            //connectionString = ConfigurationManager.ConnectionStrings["terra"].ConnectionString;
+            
         }
 
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
-            string sql = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, rd_users_data.birthtime, rd_city.cityname, rd_city.longitude, rd_city.latitude FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id JOIN rd_city ON rd_users_data.city_id=rd_city.id";
+            string sql = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, " +
+                "rd_users_data.birthtime, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
+                "FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id JOIN rd_city ON rd_users_data.city_id=rd_city.id";
             dtUsers = new DataTable();
             //SqlConnection connection = null;
             MySqlConnection skycon = new MySqlConnection(connectionString);
@@ -85,6 +89,8 @@ namespace SkyRider_WPF
                 //usersGrid.SelectedIndex = 0;
                 //usersGrid.Focus();
                 //usersGrid.setf
+                Application.Current.Resources["skyconn"] = skycon;
+                Application.Current.Resources["mainquery"] = sql;
             }
 
 
@@ -158,7 +164,48 @@ namespace SkyRider_WPF
 
         private void usersGrid_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            MessageBox.Show(e.ToString());
+            //MessageBox.Show(e.ToString());
+        }
+
+        private void frmMain_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key==System.Windows.Input.Key.Escape)
+            {
+                //frmMain.Close();
+                e.Handled = true;
+                this.Close();
+               
+            }
+        }
+
+        private void frmMain_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                string clientID;
+                //clientID = (DataRowView)(usersGrid.SelectedItems[0]).Row["id"];
+                clientID = ((DataRowView)usersGrid.SelectedItems[0]).Row["id"].ToString();
+                //MessageBox.Show(clientID.ToString());
+
+                CliData cliwin = new CliData(clientID);
+                cliwin.Owner = this;
+                cliwin.ShowDialog();
+                //cliwin.Close();
+            }
+
+            if (e.Key == System.Windows.Input.Key.F3)
+            {
+                BaseSelect base_select = new BaseSelect();
+                base_select.Owner = this;
+                base_select.ShowDialog();
+                //cliwin.Close();
+            }
+        }
+
+        private void usersGrid_Initialized(object sender, EventArgs e)
+        {
+            this.Focus();
+            
         }
     }
 }

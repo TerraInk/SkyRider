@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Name="frmMain" x:Class="SkyRider_WPF.MainWindow"
         mc:Ignorable="d"
-        Title="SkyRider" Height="556.2" Width="1022" WindowStyle="None" WindowState="Maximized" Loaded="frmMain_Loaded" Activated="frmMain_Activated" GotFocus="frmMain_GotFocus">
+        Title="SkyRider" Height="556.2" Width="1022" WindowStyle="None" WindowState="Maximized" Loaded="frmMain_Loaded" Activated="frmMain_Activated" GotFocus="frmMain_GotFocus" KeyDown="frmMain_KeyDown" PreviewKeyDown="frmMain_PreviewKeyDown">
     <Window.Resources>
         <Style x:Key="MainGrid" TargetType="DataGrid">
             <!--<Setter Property="UseLayoutRounding" Value="True"/>-->
@@ -13,17 +13,36 @@
             <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Background" Value="White"/>
-            <Setter Property="RowHeight" Value="40"/>
+            <Setter Property="RowHeight" Value="45"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
 <!--            <Setter Property="VerticalGridLinesBrush" Value="White"/>-->
             <Setter Property="HorizontalGridLinesBrush" Value="AliceBlue"/>
-            
-            
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+
+
 
         </Style>
+
+            <Style TargetType="{x:Type DataGridCell}">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            </Style>
+
+
+            <Style x:Key="FocusVisualStyle">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="-2" StrokeThickness="1" Stroke="AliceBlue"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <Style x:Key="Body_Content_DataGrid_Centering"
         TargetType="{x:Type DataGridCell}">
             <Setter Property="Template">
@@ -35,6 +54,10 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+
         </Style>
         <Style x:Key="CellTextCentre" TargetType="DataGridCell">
             <Setter Property="TextBlock.VerticalAlignment" Value="Center"></Setter>
@@ -66,7 +89,8 @@
             <Setter Property="MinWidth" Value="0" />
             <Setter Property="MinHeight" Value="30" />
             <Setter Property="Cursor" Value="Hand" />
-            
+            <Setter Property="Focusable" Value="False" />
+
         </Style>
 
 
@@ -119,18 +143,26 @@
             </TabControl.Resources>
 
 
-            <TabItem Header="Основная база" Height="40" Width="200" IsTabStop="False">
+            <TabItem Header="Основная база" Height="40" Width="200" Focusable="False">
 
-                <Grid Background="White" Margin="5,15,1,1">
-                    <DataGrid x:Name="usersGrid" AutoGenerateColumns="False" Style="{StaticResource MainGrid}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" ColumnHeaderStyle="{StaticResource HeaderStyle}" TextOptions.TextFormattingMode="Display" BorderThickness="0" KeyDown="usersGrid_KeyDown">
+                <Grid Background="White" Margin="15,15,30,1" Focusable="False">
+                    <DataGrid x:Name="usersGrid" AutoGenerateColumns="False" Style="{StaticResource MainGrid}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" ColumnHeaderStyle="{StaticResource HeaderStyle}" TextOptions.TextFormattingMode="Display" BorderThickness="0" KeyDown="usersGrid_KeyDown" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Initialized="usersGrid_Initialized" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Path=id}"/>
-                            <DataGridCheckBoxColumn Header=" " Width="30"/>
+                            <DataGridCheckBoxColumn Header=" " Width="30" />
                             
-                            <DataGridTextColumn Header="Имя"  Width="350" Binding="{Binding Path=fname}">
+                            <DataGridTextColumn Header="Имя"  Width="450" Binding="{Binding Path=fname}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="Margin" Value="15,0,7,0"/>
+                                        
+
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Дата" Width="100" Binding="{Binding Path=birthday,StringFormat={}{0:dd.MM.yyyy}}">
-                            
+                            <DataGridTextColumn Header="Дата" Width="150" Binding="{Binding Path=birthday,StringFormat={}{0:dd.MM.yyyy}}">
+
                                 <DataGridTextColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -141,7 +173,7 @@
 
                                     </Style>
                                 </DataGridTextColumn.HeaderStyle>
-                                
+
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="HorizontalAlignment" Value="Right" />
@@ -152,7 +184,7 @@
                                 
                             </DataGridTextColumn>
                             
-                            <DataGridTextColumn Header="GMT" Width="100" Binding="{Binding Path=birthtime}">
+                            <DataGridTextColumn Header="GMT" Width="120" Binding="{Binding Path=birthtime}">
                                 <DataGridTextColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -171,7 +203,7 @@
                                 </DataGridTextColumn.ElementStyle>
                                 
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Город" Width="180" Binding="{Binding Path=cityname}">
+                            <DataGridTextColumn Header="Город" Width="230" Binding="{Binding Path=cityname}">
                                 <DataGridTextColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -179,11 +211,19 @@
                                         <Setter Property="Foreground" Value="Black" />
                                         <Setter Property="BorderThickness" Value="0,0,0,1" />
                                         <Setter Property="BorderBrush" Value="#FFBCD3DA"/>
+                                        
 
                                     </Style>
                                 </DataGridTextColumn.HeaderStyle>
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="HorizontalAlignment" Value="Left" />
+                                        <Setter Property="Margin" Value="20,0,7,0"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Долгота" Width="80" Binding="{Binding Path=longitude,StringFormat={}{0:00.00}}">
+                            <DataGridTextColumn Header="Долгота" Width="100" Binding="{Binding Path=longitude,StringFormat={}{0:00.00}}">
                                 <DataGridTextColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -203,7 +243,7 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Широта" Width="80" Binding="{Binding Path=latitude,StringFormat={}{0:00.00}}">
+                            <DataGridTextColumn Header="Широта" Width="100" Binding="{Binding Path=latitude,StringFormat={}{0:00.00}}">
                                 <DataGridTextColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader">
                                         <Setter Property="HorizontalContentAlignment" Value="Center" />
