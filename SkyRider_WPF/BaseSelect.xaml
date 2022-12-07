@@ -5,21 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SkyRider_WPF"
         mc:Ignorable="d"
-        Title="BaseSelect" Height="450" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" PreviewKeyDown="Window_PreviewKeyDown" BorderThickness="1" BorderBrush="#FF90C6D6">
-    <Grid ShowGridLines="True">
+        Title="BaseSelect" Height="550" Width="400" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" PreviewKeyDown="Window_PreviewKeyDown" BorderThickness="1" BorderBrush="#FF90C6D6">
+    
+    
+    <Grid ShowGridLines="False">
+        
         <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ListView >
+
+        <StackPanel Margin="10" Grid.ColumnSpan="2">
+            <Label Width="auto" Height="38" BorderThickness="0,0,0,1" BorderBrush="#FF90C6D6">
+                <TextBlock TextWrapping="Wrap" Text="Базы данных" FontFamily="Roboto" FontSize="20"/>
+            </Label>
+        </StackPanel>
+        
+        <ListView Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
+ 
+        <Button x:Name="cmdOpen" Grid.Row="2" Grid.Column="0" Margin="5,3">Открыть</Button>
+        <Button x:Name="cmdClose" Grid.Row="2" Grid.Column="1" Margin="5,3">Закрыть</Button>
 
     </Grid>
 </Window>

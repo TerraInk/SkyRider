@@ -56,7 +56,7 @@
         
         <Button Grid.Row="6" Grid.Column="2" Padding="3" Margin="3,3,15,3">Координаты городов</Button>
 
-        <TextBox Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="3,3,15,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">Гандон редкий</TextBox>
+        <TextBox x:Name="cliremark" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="3,3,15,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">Гандон редкий</TextBox>
 
         <ComboBox Grid.Row="9" Grid.Column="1" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Name="comboBox1">
             <ComboBoxItem Content="Без домов"/>
@@ -67,8 +67,8 @@
             <ComboBoxItem Content="Знак-Дом"/>
 
         </ComboBox>
-        <Button Grid.Row="10" Grid.Column="1" Padding="8" Margin="23,36,15,10">Сохранить (Ctrl-Enter)</Button>
-        <Button Grid.Row="10" Grid.Column="3" Padding="8" Margin="23,36,15,10">Закрыть</Button>
+        <Button x:Name="cmdSave" Grid.Row="10" Grid.Column="1" Padding="8" Margin="23,36,15,10" Click="Button_Click">Сохранить (Ctrl-Enter)</Button>
+        <Button x:Name="cmdClose" Grid.Row="10" Grid.Column="3" Padding="8" Margin="23,36,15,10" Click="cmdClose_Click">Закрыть</Button>
 
     </Grid>
 </Window>

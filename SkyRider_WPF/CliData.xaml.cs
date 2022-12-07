@@ -9,13 +9,18 @@ namespace SkyRider_WPF
     /// <summary>
     /// Логика взаимодействия для CliData.xaml
     /// </summary>
+    /// 
     public partial class CliData : Window
     {
         string clientIdEdit;
+        
+
         public CliData(string cliendId)
         {
             InitializeComponent();
             clientIdEdit = cliendId;
+
+
             //MessageBox.Show(clientIdEdit);
         }
 
@@ -29,6 +34,9 @@ namespace SkyRider_WPF
                 this.Close();
 
             }
+
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.Enter)
+                SaveToBase();
         }
 
         private void CliData1_Loaded(object sender, RoutedEventArgs e)
@@ -38,13 +46,14 @@ namespace SkyRider_WPF
             //query = (string)Application.Current.Resources["mainquery"];
 
             query = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, " +
-                "rd_users_data.birthtime, rd_city.cityname, rd_city.longitude, rd_city.latitude, rd_city.gmt " +
+                "rd_users_data.birthtime, rd_users_data.remark, " +
+                "rd_city.cityname, rd_city.longitude, rd_city.latitude, rd_city.gmt " +
                 "FROM rd_users " +
                 "JOIN rd_users_data ON rd_users.id=rd_users_data.user_id " +
                 "JOIN rd_city ON rd_users_data.city_id=rd_city.id WHERE rd_users.id=" + clientIdEdit;
 
             MySqlConnection skycon = (MySqlConnection)Application.Current.Resources["skyconn"];
-            
+
             //query += " WHERE rd_users.id=";
             //query += clientIdEdit;
             //MessageBox.Show(query);
@@ -54,6 +63,7 @@ namespace SkyRider_WPF
             //MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             //adapter.Fill(dtUserEdit);
             //MessageBox.Show(dtUserEdit.Rows[0]["birthtime"].ToString());
+
 
             
 
@@ -73,9 +83,12 @@ namespace SkyRider_WPF
                 cligmt.Text = dtUserEdit.Rows[0]["gmt"].ToString();
                 clitime.Text = dtUserEdit.Rows[0]["birthtime"].ToString();
                 clicity.Text = dtUserEdit.Rows[0]["cityname"].ToString();
-                clilat.Text = dtUserEdit.Rows[0]["latitude"].ToString();
+                clilat.Text = string.Format("{0:00.00}", dtUserEdit.Rows[0]["latitude"]);
                 //temp = dtUserEdit.Rows[0]["longitude"].ToString();
                 clilon.Text = string.Format("{0:00.00}", dtUserEdit.Rows[0]["longitude"]);
+                cliremark.Text = dtUserEdit.Rows[0]["remark"].ToString();
+
+                cliname.Focus();
             }
 
             catch (Exception ex)
@@ -88,6 +101,50 @@ namespace SkyRider_WPF
                     skycon.Close();
             }
             
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            SaveToBase();
+        }
+
+        private void SaveToBase()
+        {
+            string rd_users = string.Format("Update rd_users SET fname='{0}' WHERE id={1}", cliname.Text, clientIdEdit);
+            MySqlConnection skycon = (MySqlConnection)Application.Current.Resources["skyconn"];
+            skycon.Open();
+
+            //MessageBox.Show(rd_users);
+
+            MySqlCommand cmd = skycon.CreateCommand();
+            //MySqlCommand cmd = new MySqlCommand(rd_users, skycon);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+
+            cmd.CommandText = rd_users;
+            cmd.ExecuteNonQuery();
+
+            string rd_users_data = string.Format("Update rd_users_data SET remark='{0}' WHERE user_id={1}", cliremark.Text, clientIdEdit);
+            cmd.CommandText = rd_users_data;
+            cmd.ExecuteNonQuery();
+            //long id = cmd.LastInsertedId;
+
+            //string rd_users_data = string.Format(
+            //    "Insert into rd_users_data (user_id, birthday, birthtime, julday, city_id) " +
+            //                               "values ({0}, '{1}', '{2}', '{3}', {4})",
+            //                                id, NEDate, NETime, NE_JD, NE_CityId
+            //    );
+
+            //cmd.CommandText = rd_users_data;
+            //cmd.ExecuteNonQuery();
+            MessageBox.Show("Записано !");
+            //this.Focusable = true;
+            cliname.Focus();
+        }
+
+        private void cmdClose_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            this.Close();
         }
     }
 }

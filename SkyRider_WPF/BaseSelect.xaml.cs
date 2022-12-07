@@ -34,5 +34,10 @@ namespace SkyRider_WPF
 
             }
         }
+
+        private void cmdOpen_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

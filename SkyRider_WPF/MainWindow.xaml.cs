@@ -51,8 +51,9 @@ namespace SkyRider_WPF
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
             string sql = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, " +
-                "rd_users_data.birthtime, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
-                "FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id JOIN rd_city ON rd_users_data.city_id=rd_city.id";
+                "rd_users_data.birthtime, rd_users_data.remark, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
+                "FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id " +
+                "JOIN rd_city ON rd_users_data.city_id=rd_city.id WHERE rd_users.del<1";
             dtUsers = new DataTable();
             //SqlConnection connection = null;
             MySqlConnection skycon = new MySqlConnection(connectionString);
@@ -66,6 +67,10 @@ namespace SkyRider_WPF
                 MySqlDataAdapter adapter = new MySqlDataAdapter(command);
                 adapter.Fill(dtUsers);
                 usersGrid.ItemsSource = dtUsers.DefaultView;
+
+                //int t = dtUsers.Rows.Count;
+                recCount.Content += " " + dtUsers.Rows.Count.ToString();
+
                 //usersGrid2.ItemsSource = dtUsers.DefaultView;
                 //usersGrid.SelectedIndex = 0;
 
@@ -82,6 +87,8 @@ namespace SkyRider_WPF
                 //usersGrid.SelectionUnit = System.Windows.Controls.DataGridSelectionUnit.Cell;
                 usersGrid.Focus();
                 usersGrid.Columns[0].Visibility = Visibility.Collapsed;
+
+
                 //SelectRowByIndex(usersGrid, 0);
 
 
@@ -191,6 +198,7 @@ namespace SkyRider_WPF
                 cliwin.Owner = this;
                 cliwin.ShowDialog();
                 //cliwin.Close();
+                e.Handled = true;
             }
 
             if (e.Key == System.Windows.Input.Key.F3)
