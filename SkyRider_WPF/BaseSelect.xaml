@@ -36,7 +36,7 @@
         </ListView>
  
         <Button x:Name="cmdOpen" Grid.Row="2" Grid.Column="0" Margin="5,3">Открыть</Button>
-        <Button x:Name="cmdClose" Grid.Row="2" Grid.Column="1" Margin="5,3">Закрыть</Button>
+        <Button x:Name="cmdClose" Grid.Row="2" Grid.Column="1" Margin="5,3" Click="cmdClose_Click">Закрыть</Button>
 
     </Grid>
 </Window>

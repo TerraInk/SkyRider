@@ -4,6 +4,9 @@ using System.Windows;
 using System.Data.SqlClient;
 using System.Configuration;
 using MySql.Data.MySqlClient;
+using System.Windows.Input;
+using System.Windows.Documents;
+//using System.Windows.Forms;
 //using MySqlConnector;
 
 
@@ -85,6 +88,7 @@ namespace SkyRider_WPF
                 usersGrid.SelectedIndex = 0;
                 //usersGrid.TabIndex = 0;
                 //usersGrid.SelectionUnit = System.Windows.Controls.DataGridSelectionUnit.Cell;
+                
                 usersGrid.Focus();
                 usersGrid.Columns[0].Visibility = Visibility.Collapsed;
 
@@ -92,6 +96,9 @@ namespace SkyRider_WPF
                 //SelectRowByIndex(usersGrid, 0);
 
 
+                System.Windows.Input.Keyboard.Focus(usersGrid);
+
+                //tr=new trav
                 //usersGrid.MoveFocus();
                 //usersGrid.SelectedIndex = 0;
                 //usersGrid.Focus();
@@ -202,18 +209,59 @@ namespace SkyRider_WPF
             }
 
             if (e.Key == System.Windows.Input.Key.F3)
+            
+                // Открываем диалог выбора базы данных
             {
                 BaseSelect base_select = new BaseSelect();
                 base_select.Owner = this;
                 base_select.ShowDialog();
                 //cliwin.Close();
             }
+            
+            if (e.Key == System.Windows.Input.Key.F4)
+            
+                // Открываем функции по затмениям
+            {
+                //((Run)paragraph.Inlines.FirstInline).Text = "Привет, мир!";
+                //this.tbsMain.
+                rtbGlobalEcl.AppendText("Солнечные затмения");
+                //tabControl1.SelectedItem = tabControl1.Items[0];
+
+                FlowDocument document = new FlowDocument();
+                Paragraph paragraph = new Paragraph();
+                List list1 = new List();
+                ListItem li1 = new ListItem();
+                document.Blocks.Add(list1);
+                
+                paragraph.Inlines.Add(new Run("текст\n работает" + "И прибавления тоже" + "Удачи"));
+                document.Blocks.Add(paragraph);
+                rtbGlobalEcl.Document = document;
+
+                tbsMain.SelectedItem = tbsMain.Items[3];
+            }
         }
 
         private void usersGrid_Initialized(object sender, EventArgs e)
         {
-            this.Focus();
+            //this.Focus();
             
+        }
+
+        private void frmMain_Initialized(object sender, EventArgs e)
+        {
+            //usersGrid.Focus();
+        }
+
+        private void TabItem_Initialized(object sender, EventArgs e)
+        {
+            //usersGrid.Focus();
+        }
+
+        private void usersGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //this.Focus();
+            //
+            //usersGrid.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
     }
 }

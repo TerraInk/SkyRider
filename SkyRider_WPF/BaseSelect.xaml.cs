@@ -39,5 +39,11 @@ namespace SkyRider_WPF
         {
 
         }
+
+        private void cmdClose_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            this.Close();
+        }
     }
 }

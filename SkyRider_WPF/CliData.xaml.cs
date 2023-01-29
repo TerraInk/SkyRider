@@ -110,6 +110,8 @@ namespace SkyRider_WPF
 
         private void SaveToBase()
         {
+            string birthday, btime;
+
             string rd_users = string.Format("Update rd_users SET fname='{0}' WHERE id={1}", cliname.Text, clientIdEdit);
             MySqlConnection skycon = (MySqlConnection)Application.Current.Resources["skyconn"];
             skycon.Open();
@@ -123,9 +125,25 @@ namespace SkyRider_WPF
             cmd.CommandText = rd_users;
             cmd.ExecuteNonQuery();
 
-            string rd_users_data = string.Format("Update rd_users_data SET remark='{0}' WHERE user_id={1}", cliremark.Text, clientIdEdit);
+            birthday = string.Format("{0:yyyy-MM-dd}", Convert.ToDateTime(clidate.Text));
+            btime    = string.Format("{0:HH:mm:ss}",   Convert.ToDateTime(clitime.Text));
+
+            string rd_users_data = string.Format("Update rd_users_data SET birthday='{0}', birthtime='{1}', remark='{2}' " +
+                "WHERE user_id={3}", birthday, btime, cliremark.Text, clientIdEdit);
             cmd.CommandText = rd_users_data;
-            cmd.ExecuteNonQuery();
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (skycon != null)
+                    skycon.Close();
+            }
             //long id = cmd.LastInsertedId;
 
             //string rd_users_data = string.Format(
