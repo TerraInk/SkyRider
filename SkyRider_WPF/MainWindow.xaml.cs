@@ -222,20 +222,64 @@ namespace SkyRider_WPF
             
                 // Открываем функции по затмениям
             {
-                //((Run)paragraph.Inlines.FirstInline).Text = "Привет, мир!";
-                //this.tbsMain.
-                rtbGlobalEcl.AppendText("Солнечные затмения");
+                ///rtbGlobalEcl.AppendText("Солнечные затмения");
                 //tabControl1.SelectedItem = tabControl1.Items[0];
 
-                FlowDocument document = new FlowDocument();
-                Paragraph paragraph = new Paragraph();
-                List list1 = new List();
-                ListItem li1 = new ListItem();
-                document.Blocks.Add(list1);
-                
-                paragraph.Inlines.Add(new Run("текст\n работает" + "И прибавления тоже" + "Удачи"));
-                document.Blocks.Add(paragraph);
-                rtbGlobalEcl.Document = document;
+                //FlowDocument document = new FlowDocument();
+                //Paragraph paragraph = new Paragraph();
+                //List list1 = new List();
+                //ListItem li1 = new ListItem();
+                //document.Blocks.Add(list1);
+
+                //paragraph.Inlines.Add(new Run("текст\n работает" + "И прибавления тоже" + "Удачи"));
+                //document.Blocks.Add(paragraph);
+                //rtbGlobalEcl.Document = document;
+
+                txtGlobalEcl.AppendText("Солнечные затмения:\n");
+                txtGlobalEcl.AppendText("В 2023 году\n");
+                DateTime nowUtc = DateTime.Now;
+
+                using (var sweph = new SwissEphNet.SwissEph())
+                {
+                    var jday = Convert.ToInt16(nowUtc.Day);
+                    var jmon = Convert.ToInt16(nowUtc.Month);
+                    var jyear = Convert.ToInt16(nowUtc.Year);
+                    var jhour = Convert.ToInt16(nowUtc.Hour);
+                    var jmin = Convert.ToInt16(nowUtc.Minute);
+                    var jsec = 1;
+                    var jut = jhour + (jmin / 60.0) + (jsec / 3600.0);
+                    var JulianDateUT = sweph.swe_julday(jyear, jmon, jday, jut, 1);
+                    txtGlobalEcl.AppendText(nowUtc.ToString() + "\n");
+                    txtGlobalEcl.AppendText(JulianDateUT.ToString() + "\n");
+                    //MessageBox.Show(JulianDateUT.ToString());
+                    //JulianDateUT1 = (double)JulianDateUT;
+                    double[] tret = new double[10];
+                    string merr = "";
+                    int iftype;
+                    //iftype = SwissEphNet.SwissEph.SE_ECL_TOTAL | SwissEphNet.SwissEph.SE_ECL_CENTRAL| SwissEphNet.SwissEph.SE_ECL_NONCENTRAL;
+                    //iftype = SwissEphNet.SwissEph.SE_ECL_PARTIAL;
+                    iftype = 0;
+                    var ef = sweph.swe_sol_eclipse_when_glob(
+                        JulianDateUT,
+                        0,
+                        iftype,
+                        tret,
+                        false,
+                        ref merr
+                        );
+                    double jh=0;
+                    int eyear, emon, eday;
+                    eyear = emon = eday = 0;
+                    sweph.swe_revjul(tret[0], 0, ref eyear, ref emon, ref eday, ref jh);
+                    txtGlobalEcl.AppendText("----------------------\n");
+                    txtGlobalEcl.AppendText(eday.ToString() + "." + emon.ToString() + "." + eyear.ToString() + "\n");
+                    for (int i = 0; i < 10; i++)
+                     {
+                        //Console.WriteLine(i);
+                        txtGlobalEcl.AppendText(tret[i].ToString() + "\n");
+                    }
+                    
+                }
 
                 tbsMain.SelectedItem = tbsMain.Items[3];
             }
@@ -262,6 +306,24 @@ namespace SkyRider_WPF
             //this.Focus();
             //
             //usersGrid.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        }
+
+        private void tbsMain_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            //if (itmMain !=null && itmMain.IsSelected)
+            //{
+            //usersGrid.Focus();
+            //e.Handled = true;
+            //}
+            
+            var tc = sender as System.Windows.Controls.TabControl; //The sender is a type of TabControl...
+
+            if (tc != null)
+            {
+                var item = tc.SelectedItem;
+               
+                //Do Stuff ...
+            }
         }
     }
 }

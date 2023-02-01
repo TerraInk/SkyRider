@@ -111,12 +111,12 @@
             </Border>
         </StackPanel>
 
-        <TabControl x:Name="tbsMain" Margin="1,7,1,1" Grid.Row="1" Height="Auto" FontFamily="Open Sans" FontSize="18" BorderThickness="0" Background="White">
+        <TabControl x:Name="tbsMain" Margin="1,7,1,1" Grid.Row="1" Height="Auto" FontFamily="Open Sans" FontSize="18" BorderThickness="0" Background="White" SelectionChanged="tbsMain_SelectionChanged">
 
 
 
 
-            <TabItem Header="Основная база" TabIndex="1" Height="40" Width="250" Initialized="TabItem_Initialized">
+            <TabItem x:Name="itmMain"  Header="Основная база" TabIndex="1" Height="40" Width="250" Initialized="TabItem_Initialized">
 
 
                 <DataGrid x:Name="usersGrid" TabIndex="0" Focusable="True" Margin="1,15,1,1" IsReadOnly="True" AutoGenerateColumns="False" Style="{StaticResource MainGrid}" CellStyle="{StaticResource Body_Content_DataGrid_Centering}" ColumnHeaderStyle="{StaticResource HeaderStyle}" TextOptions.TextFormattingMode="Display" BorderThickness="0" KeyDown="usersGrid_KeyDown" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Initialized="usersGrid_Initialized" Loaded="usersGrid_Loaded" >
@@ -275,21 +275,13 @@
                     <Border BorderBrush="#FFBCD3DA" BorderThickness="1" Margin="0,5,0,0">
                     </Border>
 
-                    <RichTextBox Grid.Row="1" Name="rtbGlobalEcl" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run Text=""/>
-                            </Paragraph>
-                        </FlowDocument>
-                    </RichTextBox>
+                    <TextBox Grid.Row="1" Name="txtGlobalEcl" TextWrapping="Wrap" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
 
-                    <RichTextBox Grid.Row="2" Name="rtbIndiEcl" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run Text="Куда попадают"/>
-                            </Paragraph>
-                        </FlowDocument>
-                    </RichTextBox>
+                    </TextBox>
+
+                    <TextBox Grid.Row="2" Name="txtIndiEcl" TextWrapping="Wrap" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        
+                    </TextBox>
 
                 </Grid>
             </TabItem>

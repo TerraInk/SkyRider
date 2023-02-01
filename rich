@@ -1,0 +1,15 @@
+<RichTextBox Grid.Row="1" Name="rtbGlobalEcl" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <FlowDocument>
+                            <Paragraph>
+                                <Run Text=""/>
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
+
+<RichTextBox Grid.Row="2" Name="rtbIndiEcl" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                        <FlowDocument>
+                            <Paragraph>
+                                <Run Text="Куда попадают"/>
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
