@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Name="frmMain" x:Class="SkyRider_WPF.MainWindow"
         mc:Ignorable="d"
-        Title="SkyRider" Height="556.2" Width="1022" WindowStyle="None" WindowState="Maximized" Loaded="frmMain_Loaded" Activated="frmMain_Activated" GotFocus="frmMain_GotFocus" KeyDown="frmMain_KeyDown" PreviewKeyDown="frmMain_PreviewKeyDown" Initialized="frmMain_Initialized">
+        Title="SkyRider" Height="556.2" Width="1022" WindowStyle="None" WindowState="Maximized" Loaded="frmMain_Loaded" Activated="frmMain_Activated" GotFocus="frmMain_GotFocus" KeyDown="frmMain_KeyDown" PreviewKeyDown="frmMain_PreviewKeyDown" Initialized="frmMain_Initialized" Closed="frmMain_Closed">
     <Window.Resources>
         <Style x:Key="MainGrid" TargetType="DataGrid">
             <!--<Setter Property="UseLayoutRounding" Value="True"/>-->
@@ -267,12 +268,19 @@
             <TabItem Header="Затмения" Height="40" Width="250">
                 <Grid x:Name="ecls" Background="White" ShowGridLines="False">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="60"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <Border BorderBrush="#FFBCD3DA" BorderThickness="1" Margin="0,5,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Height="40">Выберите дату:</Label>
+                            <DatePicker x:Name="ecldat1" Margin="25,0,0,0" SelectedDateFormat="Short" Height="35"></DatePicker>
+                            <DatePicker x:Name="ecldat2" Margin="25,0,0,0" SelectedDateFormat="Short" Height="35"></DatePicker>
+                            <Button Margin="25,0,0,0" MaxWidth="300" MinWidth="150" Height="40">Посчитать</Button>
+                            
+                        </StackPanel>
                     </Border>
 
                     <TextBox Grid.Row="1" Name="txtGlobalEcl" TextWrapping="Wrap" Margin="0,5,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">

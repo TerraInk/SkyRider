@@ -1,0 +1,1 @@
+SelectedDate="{x:Static sys:DateTime.Now}"

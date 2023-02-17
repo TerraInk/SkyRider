@@ -53,6 +53,12 @@ namespace SkyRider_WPF
 
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
+            using (var sweph = new SwissEphNet.SwissEph())
+            {
+                sweph.swe_set_ephe_path(null);
+                //swe_set_ephe_path(NULL);
+            }
+
             string sql = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, " +
                 "rd_users_data.birthtime, rd_users_data.remark, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
                 "FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id " +
@@ -235,56 +241,121 @@ namespace SkyRider_WPF
                 //document.Blocks.Add(paragraph);
                 //rtbGlobalEcl.Document = document;
 
-                txtGlobalEcl.AppendText("Солнечные затмения:\n");
-                txtGlobalEcl.AppendText("В 2023 году\n");
-                DateTime nowUtc = DateTime.Now;
 
-                using (var sweph = new SwissEphNet.SwissEph())
+
+                txtGlobalEcl.AppendText("Солнечные затмения:\n");
+
+                DateTime beginUtc, endUtc, ReJul;
+
+                ecldat1.SelectedDate = DateTime.UtcNow;
+                beginUtc = (DateTime)ecldat1.SelectedDate;
+                ecldat2.SelectedDate = beginUtc.AddYears(1);
+                
+                endUtc = (DateTime)ecldat2.SelectedDate;
+
+                //nowUtc2 = nowUtc.AddYears(1);
+                //ecldat2.SelectedDate = nowUtc2;
+                var jUTbegin = Julie(beginUtc);
+                var jUTend = Julie(endUtc);
+
+                double[] tret = new double[10];
+                string merr = "";
+                int iftype = 0;
+
+                // ******** Перебираем все солнечные затмения ********
+                
+                while (jUTbegin<jUTend)
                 {
-                    var jday = Convert.ToInt16(nowUtc.Day);
-                    var jmon = Convert.ToInt16(nowUtc.Month);
-                    var jyear = Convert.ToInt16(nowUtc.Year);
-                    var jhour = Convert.ToInt16(nowUtc.Hour);
-                    var jmin = Convert.ToInt16(nowUtc.Minute);
-                    var jsec = 1;
-                    var jut = jhour + (jmin / 60.0) + (jsec / 3600.0);
-                    var JulianDateUT = sweph.swe_julday(jyear, jmon, jday, jut, 1);
-                    txtGlobalEcl.AppendText(nowUtc.ToString() + "\n");
-                    txtGlobalEcl.AppendText(JulianDateUT.ToString() + "\n");
-                    //MessageBox.Show(JulianDateUT.ToString());
-                    //JulianDateUT1 = (double)JulianDateUT;
-                    double[] tret = new double[10];
-                    string merr = "";
-                    int iftype;
-                    //iftype = SwissEphNet.SwissEph.SE_ECL_TOTAL | SwissEphNet.SwissEph.SE_ECL_CENTRAL| SwissEphNet.SwissEph.SE_ECL_NONCENTRAL;
-                    //iftype = SwissEphNet.SwissEph.SE_ECL_PARTIAL;
-                    iftype = 0;
-                    var ef = sweph.swe_sol_eclipse_when_glob(
-                        JulianDateUT,
-                        0,
-                        iftype,
-                        tret,
-                        false,
-                        ref merr
-                        );
-                    double jh=0;
-                    int eyear, emon, eday;
-                    eyear = emon = eday = 0;
-                    sweph.swe_revjul(tret[0], 0, ref eyear, ref emon, ref eday, ref jh);
-                    txtGlobalEcl.AppendText("----------------------\n");
-                    txtGlobalEcl.AppendText(eday.ToString() + "." + emon.ToString() + "." + eyear.ToString() + "\n");
-                    for (int i = 0; i < 10; i++)
-                     {
-                        //Console.WriteLine(i);
-                        txtGlobalEcl.AppendText(tret[i].ToString() + "\n");
+
+                    using (var sweph = new SwissEphNet.SwissEph())
+                    {
+                        // ******** Считаем затмение ********
+                        var ef = sweph.swe_sol_eclipse_when_glob(jUTbegin, 0, iftype, tret, false, ref merr);
+
+                        //txtGlobalEcl.AppendText(jUTbegin.ToString() + "\n");
+
+                        jUTbegin = tret[0];
+
+                        ReJul = ReJulie(jUTbegin);
+                        txtGlobalEcl.AppendText(ReJul.ToString() + "\n");
                     }
-                    
+
                 }
+                
+                txtGlobalEcl.AppendText("Лунные затмения:\n");
+                jUTbegin = Julie(beginUtc);
+                jUTend = Julie(endUtc);
+
+                // ******** Перебираем все лунные затмения ********
+
+                while (jUTbegin < jUTend)
+                {
+
+                    using (var sweph = new SwissEphNet.SwissEph())
+                    {
+                        // ******** Считаем затмение ********
+                        var ef = sweph.swe_lun_eclipse_when(jUTbegin, 0, iftype, tret, false, ref merr);
+
+                        //txtGlobalEcl.AppendText(jUTbegin.ToString() + "\n");
+
+                        jUTbegin = tret[0];
+
+                        ReJul = ReJulie(jUTbegin);
+                        txtGlobalEcl.AppendText(ReJul.ToString() + "\n");
+                    }
+
+                }
+
 
                 tbsMain.SelectedItem = tbsMain.Items[3];
             }
         }
 
+        private double Julie(DateTime jUT)
+        {
+            using (var sweph = new SwissEphNet.SwissEph())
+            {
+
+                var jday = Convert.ToInt16(jUT.Day);
+                var jmon = Convert.ToInt16(jUT.Month);
+                var jyear = Convert.ToInt16(jUT.Year);
+                var jhour = Convert.ToInt16(jUT.Hour);
+                var jmin = Convert.ToInt16(jUT.Minute);
+
+                var jsec = 1;
+                var jut = jhour + (jmin / 60.0) + (jsec / 3600.0);
+
+                //var JulianDateUT = sweph.swe_julday(jyear, jmon, jday, jut, 1);
+                return sweph.swe_julday(jyear, jmon, jday, jut, 1);
+            }
+        }
+
+        private DateTime ReJulie(double jUT)
+        {
+            double jh = 0, jh2 = 0;
+            int year, mon, day, jh3;
+            year = mon = day = 0;
+            DateTime result;
+
+            using (var sweph = new SwissEphNet.SwissEph())
+            {
+                // ******** Преобразуем в обычную дату и время ********
+
+                sweph.swe_revjul(jUT, 1, ref year, ref mon, ref day, ref jh);
+
+                //txtGlobalEcl.AppendText("----------------------\n");
+                //txtGlobalEcl.AppendText(eday.ToString() + "." + emon.ToString() + "." + eyear.ToString() + "\n");
+                //txtGlobalEcl.AppendText(jh.ToString()+"\n");
+
+                jh2 = Math.Truncate((jh - Math.Truncate(jh)) * 60);
+                jh3 = (int)Math.Truncate(jh);
+
+                //txtGlobalEcl.AppendText(jh3.ToString() + ":" + jh2.ToString());
+                result = new DateTime(year, mon, day, jh3, (int)jh2, 0);
+                return result;
+            }
+
+        }
         private void usersGrid_Initialized(object sender, EventArgs e)
         {
             //this.Focus();
@@ -323,6 +394,15 @@ namespace SkyRider_WPF
                 var item = tc.SelectedItem;
                
                 //Do Stuff ...
+            }
+        }
+
+        private void frmMain_Closed(object sender, EventArgs e)
+        {
+            using (var sweph = new SwissEphNet.SwissEph())
+            {
+                sweph.swe_close();
+                //swe_set_ephe_path(NULL);
             }
         }
     }

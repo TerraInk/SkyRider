@@ -1,0 +1,55 @@
+using (var sweph = new SwissEphNet.SwissEph())
+                {
+                    // ****** Считаем когда затмение ******
+
+                    var jday = Convert.ToInt16(beginUtc.Day);
+                    var jmon = Convert.ToInt16(beginUtc.Month);
+                    var jyear = Convert.ToInt16(beginUtc.Year);
+                    var jhour = Convert.ToInt16(beginUtc.Hour);
+                    var jmin = Convert.ToInt16(beginUtc.Minute);
+
+                    var jsec = 1;
+                    var jut = jhour + (jmin / 60.0) + (jsec / 3600.0);
+
+                    var JulianDateUT = sweph.swe_julday(jyear, jmon, jday, jut, 1);
+                    
+                    txtGlobalEcl.AppendText(beginUtc.ToString() + "\n");
+                    txtGlobalEcl.AppendText(JulianDateUT.ToString() + "\n");
+                    
+                    double[] tret = new double[10];
+                    string merr = "";
+                    int iftype;
+                    
+                    //iftype = SwissEphNet.SwissEph.SE_ECL_TOTAL | SwissEphNet.SwissEph.SE_ECL_CENTRAL| SwissEphNet.SwissEph.SE_ECL_NONCENTRAL;
+                    //iftype = SwissEphNet.SwissEph.SE_ECL_PARTIAL;
+                    
+                    iftype = 0;
+                    var ef = sweph.swe_sol_eclipse_when_glob(JulianDateUT, 0, iftype, tret, false, ref merr);
+
+                    // ******** В tret[0] возвращается юлианская дата максимального затемения *******
+
+                    double jh = 0, jh2 = 0;
+                    int eyear, emon, eday, jh3;
+                    eyear = emon = eday = 0;
+                    
+                    // ******** Преобразуем в обычную дату и время ********
+
+                    sweph.swe_revjul(tret[0], 1, ref eyear, ref emon, ref eday, ref jh);
+                    
+                    txtGlobalEcl.AppendText("----------------------\n");
+                    txtGlobalEcl.AppendText(eday.ToString() + "." + emon.ToString() + "." + eyear.ToString() + "\n");
+                    //txtGlobalEcl.AppendText(jh.ToString()+"\n");
+
+                    jh2 = Math.Truncate((jh - Math.Truncate(jh)) * 60);
+                    jh3 = (int)Math.Truncate(jh);
+
+                    txtGlobalEcl.AppendText(jh3.ToString() + ":" + jh2.ToString());
+
+                    /*
+                    for (int i = 0; i < 10; i++)
+                    {
+                        //Console.WriteLine(i);
+                        txtGlobalEcl.AppendText(tret[i].ToString() + "\n");
+                    }
+                    */
+                }
