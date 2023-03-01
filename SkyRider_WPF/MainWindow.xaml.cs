@@ -259,12 +259,26 @@ namespace SkyRider_WPF
                 var jUTend = Julie(endUtc);
 
                 double[] tret = new double[10];
-                string merr = "";
+                string tmp, clientName, merr = "";
                 int iftype = 0;
 
+                // ******** Посчитаем данные выбранного клиента ********
+
+                if (usersGrid.SelectedItems.Count == 0) return;
+                clientName = ((DataRowView)usersGrid.SelectedItems[0]).Row[1].ToString();
+                DateTime clientBDate;
+                tmp = ((DataRowView)usersGrid.SelectedItems[0]).Row[2] + " " + ((DataRowView)usersGrid.SelectedItems[0]).Row[3];
+
+                //clientBDate = (DateTime)tmp;
+
+                //clientBDate = DateTime.ParseExact(tmp, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+
+                //txtGlobalEcl.AppendText(clientBDate.ToString() + "\n");
+                txtGlobalEcl.AppendText(tmp + "\n");
+
                 // ******** Перебираем все солнечные затмения ********
-                
-                while (jUTbegin<jUTend)
+
+                while (jUTbegin < jUTend)
                 {
 
                     using (var sweph = new SwissEphNet.SwissEph())
@@ -278,6 +292,17 @@ namespace SkyRider_WPF
 
                         ReJul = ReJulie(jUTbegin);
                         txtGlobalEcl.AppendText(ReJul.ToString() + "\n");
+
+                        txtGlobalEcl.AppendText("****************\n");
+                        // ******** Считаем положение солнца в этот день ********
+                        var ef_sun = sweph.swe_calc_ut(jUTbegin, SwissEphNet.SwissEph.SE_SUN, 0, tret, ref merr);
+                        txtGlobalEcl.AppendText("Солнце:" + tret[0].ToString() + "\n");
+
+                        // ******** Считаем положение луны в этот день ********
+                        var ef_moon = sweph.swe_calc_ut(jUTbegin, SwissEphNet.SwissEph.SE_MOON, 0, tret, ref merr);
+                        txtGlobalEcl.AppendText("Луна:" + tret[0].ToString() + "\n");
+                        txtGlobalEcl.AppendText("****************\n");
+                        //SwissEphNet.SwissEph.SEFLG_SPEED
                     }
 
                 }
@@ -302,6 +327,16 @@ namespace SkyRider_WPF
 
                         ReJul = ReJulie(jUTbegin);
                         txtGlobalEcl.AppendText(ReJul.ToString() + "\n");
+
+                        // ******** Считаем положение солнца в этот день ********
+                        var ef_sun = sweph.swe_calc_ut(jUTbegin, SwissEphNet.SwissEph.SE_SUN, 0, tret, ref merr);
+                        txtGlobalEcl.AppendText("Солнце:" + tret[0].ToString() + "\n");
+
+                        // ******** Считаем положение луны в этот день ********
+                        var ef_moon = sweph.swe_calc_ut(jUTbegin, SwissEphNet.SwissEph.SE_MOON, 0, tret, ref merr);
+                        txtGlobalEcl.AppendText("Луна:" + tret[0].ToString() + "\n");
+                        txtGlobalEcl.AppendText("****************\n");
+
                     }
 
                 }
