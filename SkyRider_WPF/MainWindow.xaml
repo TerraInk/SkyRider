@@ -136,7 +136,7 @@
                         </DataGridTextColumn>
 
 
-                        <DataGridTextColumn Header="Дата" Width="150" Binding="{Binding Path=birthday,StringFormat={}{0:dd.MM.yyyy}}">
+                        <DataGridTextColumn Header="Дата" Width="150" Binding="{Binding Path=birthday}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
