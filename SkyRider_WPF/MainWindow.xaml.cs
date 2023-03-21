@@ -6,6 +6,7 @@ using System.Configuration;
 using MySql.Data.MySqlClient;
 using System.Windows.Input;
 using System.Windows.Documents;
+using System.Collections.Generic;
 //using System.Windows.Forms;
 //using MySqlConnector;
 
@@ -53,6 +54,10 @@ namespace SkyRider_WPF
 
         private void frmMain_Loaded(object sender, RoutedEventArgs e)
         {
+
+            ecldat1.SelectedDate = DateTime.UtcNow;
+            ecldat2.SelectedDate = DateTime.UtcNow.AddYears(1);
+
             using (var sweph = new SwissEphNet.SwissEph())
             {
                 sweph.swe_set_ephe_path(null);
@@ -60,7 +65,7 @@ namespace SkyRider_WPF
             }
 
             string sql = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, " +
-                "rd_users_data.birthtime, rd_users_data.remark, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
+                "rd_users_data.birthtime, rd_users_data.remark, rd_users_data.dateupd, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
                 "FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id " +
                 "JOIN rd_city ON rd_users_data.city_id=rd_city.id WHERE rd_users.del<1";
             dtUsers = new DataTable();
@@ -70,15 +75,28 @@ namespace SkyRider_WPF
             try
             {
                 skycon.Open();
-                
+
                 MySqlCommand command = new MySqlCommand(sql, skycon);
-                
+
                 MySqlDataAdapter adapter = new MySqlDataAdapter(command);
                 adapter.Fill(dtUsers);
-                usersGrid.ItemsSource = dtUsers.DefaultView;
+                //adapter.Update(dtUsers);
+                
 
                 //int t = dtUsers.Rows.Count;
                 recCount.Content += " " + dtUsers.Rows.Count.ToString();
+
+
+                //DataRow dr = dtUsers.Rows[0];
+                //MessageBox.Show(dr["fname"].ToString());
+                //dr["birthday"] = DateTime.ParseExact(tmp, "dd-MM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+                
+                //dr["birthday"] = "01/11/1978";
+                //MessageBox.Show(dr["birthday"].ToString());
+
+
+                usersGrid.ItemsSource = dtUsers.DefaultView;
+                
 
                 //usersGrid2.ItemsSource = dtUsers.DefaultView;
                 //usersGrid.SelectedIndex = 0;
@@ -200,8 +218,10 @@ namespace SkyRider_WPF
 
         private void frmMain_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            //if(usersGrid.SelectedItems.Count == 0) return;
             if (e.Key == System.Windows.Input.Key.Enter)
             {
+                if (usersGrid.SelectedItems.Count == 0) return;
                 string clientID;
                 //clientID = (DataRowView)(usersGrid.SelectedItems[0]).Row["id"];
                 clientID = ((DataRowView)usersGrid.SelectedItems[0]).Row["id"].ToString();
@@ -211,6 +231,12 @@ namespace SkyRider_WPF
                 cliwin.Owner = this;
                 cliwin.ShowDialog();
                 //cliwin.Close();
+
+                //frmMain.Focus();
+                usersGrid.ItemsSource = null;
+                usersGrid.ItemsSource = dtUsers.DefaultView;
+                usersGrid.Items.Refresh();
+                //usersGrid.Focus();
                 e.Handled = true;
             }
 
@@ -243,34 +269,52 @@ namespace SkyRider_WPF
 
 
 
-                txtGlobalEcl.AppendText("Солнечные затмения:\n");
+                txtIndiEcl.AppendText("Солнечные затмения:\n");
 
                 DateTime beginUtc, endUtc, ReJul;
 
-                ecldat1.SelectedDate = DateTime.UtcNow;
+                //DateTime.UtcNow.AddYears(1);
+
                 beginUtc = (DateTime)ecldat1.SelectedDate;
-                ecldat2.SelectedDate = beginUtc.AddYears(1);
-                
                 endUtc = (DateTime)ecldat2.SelectedDate;
 
-                //nowUtc2 = nowUtc.AddYears(1);
-                //ecldat2.SelectedDate = nowUtc2;
                 var jUTbegin = Julie(beginUtc);
                 var jUTend = Julie(endUtc);
 
                 double[] tret = new double[10];
+                double cliJulday;
                 string clientName, merr = "";
                 int iftype = 0;
+                //string tmp;
+                var iOrbis = Convert.ToInt16(inpOrbis.Text);
 
                 // ******** Посчитаем данные выбранного клиента ********
 
                 if (usersGrid.SelectedItems.Count == 0) return;
+
+                //DataRow dr = dtUsers.Rows[usersGrid.SelectedItems[0]];
+                var cri = usersGrid.Items.IndexOf(usersGrid.CurrentItem);
+                var dr = dtUsers.Rows[cri];
+                //MessageBox.Show(dr["birthday"].ToString());
+                //MessageBox.Show(dr["date"].ToString());
+
                 clientName = ((DataRowView)usersGrid.SelectedItems[0]).Row[1].ToString();
                 DateTime clientBDate;
                 clientBDate = (DateTime)((DataRowView)usersGrid.SelectedItems[0]).Row[2];
                 //tmp = (DateTime)((DataRowView)usersGrid.SelectedItems[0]).Row[3];
                 clientBDate += TimeSpan.Parse(((DataRowView)usersGrid.SelectedItems[0]).Row[3].ToString());
-                //tmp = string.Format("{dd.MM.yyyy}", tmp);
+
+
+                txtIndiEcl.Clear();
+
+                cliJulday = Julie(clientBDate);
+
+
+
+                //tmp = dr["birthday"].ToString();
+                //tmp = string.Format("{dd-MM-yyyy}", tmp);
+
+                //txtGlobalEcl.AppendText(tmp + "\n");
                 //+ " " + ((DataRowView)usersGrid.SelectedItems[0]).Row[3];
 
                 //clientBDate = (DateTime)tmp;
@@ -279,6 +323,8 @@ namespace SkyRider_WPF
 
                 //txtGlobalEcl.AppendText(clientBDate.ToString() + "\n");
                 //txtGlobalEcl.AppendText(clientBDate.ToString() + "\n");
+
+
 
                 // ******** Перебираем все солнечные затмения ********
 
@@ -348,6 +394,73 @@ namespace SkyRider_WPF
 
                 tbsMain.SelectedItem = tbsMain.Items[3];
             }
+        }
+
+        private List<double> EcclipseList(DateTime startDate, DateTime endDate, List<double> eclDates)
+        {
+
+            var jUTbegin = Julie(startDate);
+            var jUTend = Julie(endDate);
+
+            //List<double> eclDates = new List<double>(20);
+
+            double[] tret = new double[10];
+            string merr = "";
+            int iftype = 0;
+            DateTime ReJul;
+
+            // ******** Перебираем все солнечные затмения ********
+
+            while (jUTbegin <= jUTend)
+            {
+
+                using (var sweph = new SwissEphNet.SwissEph())
+                {
+                    // ******** Считаем затмение ********
+                    var ef = sweph.swe_sol_eclipse_when_glob(jUTbegin, 0, iftype, tret, false, ref merr);
+
+                    //txtGlobalEcl.AppendText(jUTbegin.ToString() + "\n");
+                    if (tret[0] < jUTend)
+                    {
+                        jUTbegin = tret[0];
+
+                        ReJul = ReJulie(jUTbegin);
+                        eclDates.Add(jUTbegin);
+                    }
+                    else jUTbegin = tret[0];
+                }
+
+            }
+
+            jUTbegin = Julie((DateTime)ecldat1.SelectedDate);
+            jUTend = Julie((DateTime)ecldat2.SelectedDate);
+            eclDates.Add(-1);
+
+            // ******** Перебираем все лунные затмения ********
+
+            while (jUTbegin <= jUTend)
+            {
+
+                using (var sweph = new SwissEphNet.SwissEph())
+                {
+                    // ******** Считаем затмение ********
+                    var ef = sweph.swe_lun_eclipse_when(jUTbegin, 0, iftype, tret, false, ref merr);
+
+                    if (tret[0] < jUTend)
+                    {
+                        jUTbegin = tret[0];
+
+                        ReJul = ReJulie(jUTbegin);
+                        eclDates.Add(jUTbegin);
+                    }
+                    else jUTbegin = tret[0];
+
+                }
+
+            }
+
+
+            return eclDates;
         }
 
         private double Julie(DateTime jUT)
@@ -442,6 +555,53 @@ namespace SkyRider_WPF
             {
                 sweph.swe_close();
                 //swe_set_ephe_path(NULL);
+            }
+        }
+
+        private void usersGrid_AutoGeneratingColumn(object sender, System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs e)
+        {
+            string header = e.Column.Header.ToString();
+            //messagebox.show(header);
+
+            //MessageBox.Show(header);
+
+            if (header == "birthday")
+            {
+                e.Column.Header = "Дата";
+                e.Column.ClipboardContentBinding.StringFormat = "dd.MM.yyyy";
+                //e.Column.HeaderStyle.
+                //dataGridView1.Columns[0].Header = "Number";
+                //usersGrid.Columns[2].HeaderStyle.Re
+            }
+
+        }
+
+        private void usersGrid_AutoGeneratedColumns(object sender, EventArgs e)
+        {
+            //MessageBox.Show("Сука ебанная !!!");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<double> lstEcclipses = new List<double>(20);
+            EcclipseList((DateTime)ecldat1.SelectedDate, (DateTime)ecldat2.SelectedDate, lstEcclipses);
+            DateTime dt;
+
+            txtGlobalEcl.Clear();
+            txtGlobalEcl.AppendText("Солнечные затмения:\n");
+
+            foreach (var dEcclipse in lstEcclipses)
+            {
+                if (dEcclipse > 0)
+                {
+                    dt = ReJulie(dEcclipse);
+                    txtGlobalEcl.AppendText(dt.ToString() + "\n");
+                }
+                else
+                {
+                    txtGlobalEcl.AppendText("Лунные затмения:\n");
+                }
+                
             }
         }
     }

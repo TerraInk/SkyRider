@@ -1,31 +1,32 @@
-﻿<Window x:Name="CliData1" x:Class="SkyRider_WPF.CliData"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SkyRider_WPF"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Name="CliData1" x:Class="SkyRider_WPF.CliData"
         mc:Ignorable="d"
         Title="CliData" Height="530" Width="850" WindowStartupLocation="CenterOwner" WindowStyle="None" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize" BorderThickness="1" BorderBrush="#FF90C6D6" Loaded="CliData1_Loaded">
 
     <Grid ShowGridLines="False">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
 
@@ -35,30 +36,33 @@
             </Label>
         </StackPanel>
 
-        <Label Grid.Row="1" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Ф.И.О.</Label>
-        <Label Grid.Row="2" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Дата (LT)</Label>
-        <Label Grid.Row="3" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Время (LT)</Label>
-        <Label Grid.Row="4" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Место</Label>
-        <Label Grid.Row="5" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Поправка (GMT-LT)</Label>
-        <Label Grid.Row="6" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Широта</Label>
-        <Label Grid.Row="7" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Долгота</Label>
-        <Label Grid.Row="8" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Примечание</Label>
-        <Label Grid.Row="9" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18">Система домов</Label>
+        <Label Grid.Row="1" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Ф.И.О."/>
+        <Label Grid.Row="2" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Дата (LT)"/>
+        <Label Grid.Row="3" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Время (LT)"/>
+        <Label Grid.Row="4" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Место"/>
+        <Label Grid.Row="5" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Поправка (GMT-LT)"/>
+        <Label Grid.Row="6" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Широта"/>
+        <Label Grid.Row="7" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Долгота"/>
+        <Label Grid.Row="8" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Примечание"/>
+        <Label Grid.Row="9" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Система домов"/>
 
 
-        <TextBox x:Name="cliname" Grid.Row="1" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">Иванов И.И.</TextBox>
-        <TextBox x:Name="clidate" Grid.Row="2" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18"></TextBox>
-        <TextBox x:Name="clitime" Grid.Row="3" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18"></TextBox>
-        <TextBox x:Name="clicity" Grid.Row="4" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">Омск</TextBox>
-        <TextBox x:Name="cligmt" Grid.Row="5" Grid.Column="1" Margin="3,3,230,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">+6</TextBox>
-        <TextBox x:Name="clilat" Grid.Row="6" Grid.Column="1" Margin="3,3,230,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">55.00</TextBox>
-        <TextBox x:Name="clilon" Grid.Row="7" Grid.Column="1" Margin="3,3,230,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">73.24</TextBox>
-        
-        <Button Grid.Row="6" Grid.Column="2" Padding="3" Margin="3,3,15,3">Координаты городов</Button>
+        <TextBox x:Name="cliname" Grid.Row="1" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="Иванов И.И."/>
 
-        <TextBox x:Name="cliremark" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="3,3,15,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18">Гандон редкий</TextBox>
 
-        <ComboBox Grid.Row="9" Grid.Column="1" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Name="comboBox1">
+        <xctk:MaskedTextBox x:Name="clidate" Height="auto" Grid.Row="2" Grid.Column="1" Margin="3" TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="  -  -    " Mask="00-00-0000"/>
+
+        <TextBox x:Name="clitime" Grid.Row="3" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18"/>
+        <TextBox x:Name="clicity" Grid.Row="4" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="Омск"/>
+        <TextBox x:Name="cligmt" Grid.Row="5" Grid.Column="1" Margin="3,3,230,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="+6"/>
+        <TextBox x:Name="clilat" Grid.Row="6" Grid.Column="1" Margin="3,3,230,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="55.00"/>
+        <TextBox x:Name="clilon" Grid.Row="7" Grid.Column="1" Margin="3,3,230,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="73.24"/>
+
+        <Button Grid.Row="6" Grid.Column="2" Padding="3" Margin="3,3,15,3" Content="Координаты городов"/>
+
+        <TextBox x:Name="cliremark" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" Margin="3,3,15,3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18" Text="Гандон редкий"/>
+
+        <ComboBox Grid.Row="9" Grid.Column="1" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" x:Name="comboBox1">
             <ComboBoxItem Content="Без домов"/>
             <ComboBoxItem Content="Плацидус"/>
             <ComboBoxItem Content="Кох"/>
@@ -67,8 +71,11 @@
             <ComboBoxItem Content="Знак-Дом"/>
 
         </ComboBox>
-        <Button x:Name="cmdSave" Grid.Row="10" Grid.Column="1" Padding="8" Margin="23,36,15,10" Click="Button_Click">Сохранить (Ctrl-Enter)</Button>
-        <Button x:Name="cmdClose" Grid.Row="10" Grid.Column="3" Padding="8" Margin="23,36,15,10" Click="cmdClose_Click">Закрыть</Button>
+
+        <Button x:Name="cmdSave" Grid.Row="10" Grid.Column="1" Padding="8" Margin="23,36,15,10" Click="Button_Click" Content="Сохранить (Ctrl-Enter)"/>
+        <Button x:Name="cmdClose" Grid.Row="10" Grid.Column="3" Padding="8" Margin="23,36,15,10" Click="cmdClose_Click" Content="Закрыть"/>
+
+        
 
     </Grid>
 </Window>

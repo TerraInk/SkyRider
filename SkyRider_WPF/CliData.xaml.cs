@@ -31,12 +31,12 @@ namespace SkyRider_WPF
             {
                 //frmMain.Close();
                 e.Handled = true;
-                this.Close();
+                Close();
 
             }
 
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.Enter)
-                SaveToBase();
+            { SaveToBase(); }
         }
 
         private void CliData1_Loaded(object sender, RoutedEventArgs e)
@@ -77,7 +77,7 @@ namespace SkyRider_WPF
                 //cliname.DataContext.
                 //dtUserEdit
                 cliname.Text = (string)dtUserEdit.Rows[0]["fname"];
-                clidate.Text = string.Format("{0:dd.MM.yyyy}", dtUserEdit.Rows[0]["birthday"]);
+                clidate.Text = string.Format("{0:dd-MM-yyyy}", dtUserEdit.Rows[0]["birthday"]);
                 //clitime.Text = string.Format("{0:HH:mm:ss}", dtUserEdit.Rows[0]["birthtime"]);
                 //cliname.Text = (string)dtUserEdit.Rows[0]["birthtime"];
                 cligmt.Text = dtUserEdit.Rows[0]["gmt"].ToString();
@@ -106,6 +106,8 @@ namespace SkyRider_WPF
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             SaveToBase();
+            e.Handled = true;
+            this.Close();
         }
 
         private void SaveToBase()
@@ -156,7 +158,7 @@ namespace SkyRider_WPF
             //cmd.ExecuteNonQuery();
             MessageBox.Show("Записано !");
             //this.Focusable = true;
-            cliname.Focus();
+            //cliname.Focus();
         }
 
         private void cmdClose_Click(object sender, RoutedEventArgs e)

@@ -1,0 +1,1 @@
+<TextBox x:Name="clidate" Grid.Row="2" Grid.Column="1" Margin="3" Height="auto" VerticalAlignment="Center" FontFamily="Roboto" FontSize="18"/>
