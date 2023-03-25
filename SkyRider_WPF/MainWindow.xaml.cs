@@ -7,6 +7,9 @@ using MySql.Data.MySqlClient;
 using System.Windows.Input;
 using System.Windows.Documents;
 using System.Collections.Generic;
+using System.Windows.Data;
+using System.Text;
+using System.IO;
 //using System.Windows.Forms;
 //using MySqlConnector;
 
@@ -57,10 +60,15 @@ namespace SkyRider_WPF
 
             ecldat1.SelectedDate = DateTime.UtcNow;
             ecldat2.SelectedDate = DateTime.UtcNow.AddYears(1);
-
+            //SwissEphNet.SwissEph.SE_EPHE_PATH = "0";
+            
             using (var sweph = new SwissEphNet.SwissEph())
             {
-                sweph.swe_set_ephe_path(null);
+                sweph.swe_set_ephe_path("C:\\SWEPH\\EPHE\\");
+                
+                sweph.swe_set_jpl_file("E:\\EPHE\\");
+                //MessageBox.Show( sweph.swe_get_library_path());
+                
                 //swe_set_ephe_path(NULL);
             }
 
@@ -233,10 +241,13 @@ namespace SkyRider_WPF
                 //cliwin.Close();
 
                 //frmMain.Focus();
-                usersGrid.ItemsSource = null;
-                usersGrid.ItemsSource = dtUsers.DefaultView;
-                usersGrid.Items.Refresh();
+                //usersGrid.ItemsSource = null;
+                //usersGrid.ItemsSource = dtUsers.DefaultView;
+                //usersGrid.Items.Refresh();
+
+                CollectionViewSource.GetDefaultView(usersGrid.ItemsSource).Refresh();
                 //usersGrid.Focus();
+
                 e.Handled = true;
             }
 
@@ -269,7 +280,7 @@ namespace SkyRider_WPF
 
 
 
-                txtIndiEcl.AppendText("Солнечные затмения:\n");
+                
 
                 DateTime beginUtc, endUtc, ReJul;
 
@@ -309,6 +320,32 @@ namespace SkyRider_WPF
 
                 cliJulday = Julie(clientBDate);
 
+                // ******** Расчитываем все планеты и дома клиента ********
+                double[] cliPlPos = new double[100];
+                string plnName;
+                int i = SwissEphNet.SwissEph.SE_SUN;
+
+                using (var swephcli = new SwissEphNet.SwissEph())
+                {
+                    swephcli.swe_set_ephe_path("e:\\ephe");
+                    swephcli.OnLoadFile += Swephcli_OnLoadFile;
+                    
+
+                    while (i < SwissEphNet.SwissEph.SE_PROSERPINA)
+                    {
+                        if (!(i == SwissEphNet.SwissEph.SE_EARTH))
+                        {
+                            var clipl = swephcli.swe_calc_ut(cliJulday, i, SwissEphNet.SwissEph.SEFLG_SPEED | SwissEphNet.SwissEph.SEFLG_SWIEPH, tret, ref merr);
+                            cliPlPos[i] = tret[0];
+                            plnName = swephcli.swe_get_planet_name(i);
+                            txtIndiEcl.AppendText(plnName + " - " + tret[0].ToString() + "\n");
+                            txtIndiEcl.AppendText(merr + "\n");
+                            i++;
+                        }
+                        else i++;
+
+                    }
+                }
 
 
                 //tmp = dr["birthday"].ToString();
@@ -328,6 +365,8 @@ namespace SkyRider_WPF
 
                 // ******** Перебираем все солнечные затмения ********
 
+                txtIndiEcl.AppendText("Солнечные затмения:\n");
+
                 while (jUTbegin < jUTend)
                 {
 
@@ -341,7 +380,7 @@ namespace SkyRider_WPF
                         jUTbegin = tret[0];
 
                         ReJul = ReJulie(jUTbegin);
-                        txtGlobalEcl.AppendText(ReJul.ToString() + "\n");
+                        txtIndiEcl.AppendText(ReJul.ToString() + "\n");
 
                         //txtGlobalEcl.AppendText("****************\n");
                         // ******** Считаем положение солнца в этот день ********
@@ -357,7 +396,7 @@ namespace SkyRider_WPF
 
                 }
                 
-                txtGlobalEcl.AppendText("Лунные затмения:\n");
+                txtIndiEcl.AppendText("Лунные затмения:\n");
                 jUTbegin = Julie(beginUtc);
                 jUTend = Julie(endUtc);
 
@@ -376,7 +415,7 @@ namespace SkyRider_WPF
                         jUTbegin = tret[0];
 
                         ReJul = ReJulie(jUTbegin);
-                        txtGlobalEcl.AppendText(ReJul.ToString() + "\n");
+                        txtIndiEcl.AppendText(ReJul.ToString() + "\n");
 
                         // ******** Считаем положение солнца в этот день ********
                         var ef_sun = sweph.swe_calc_ut(jUTbegin, SwissEphNet.SwissEph.SE_SUN, 0, tret, ref merr);
@@ -394,6 +433,33 @@ namespace SkyRider_WPF
 
                 tbsMain.SelectedItem = tbsMain.Items[3];
             }
+        }
+
+        private void Swephcli_OnLoadFile(object sender, SwissEphNet.LoadFileEventArgs e)
+        {
+            if (e.FileName.StartsWith("[ephe]"))
+            {
+                e.File = SearchFile(e.FileName.Replace("[ephe]", string.Empty));
+            }
+            else
+            {
+                var f = e.FileName;
+                if (System.IO.File.Exists(f))
+                    e.File = new System.IO.FileStream(f, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+            }
+            //Encoding enc = e.Encoding;
+            //e.File = Provider.LoadFile(e.FileName, out enc);
+            //e.Encoding = enc;
+            //Provider.Debug.WriteLine($"Required file:{e.FileName} => {(e.File != null ? "OK" : "Not found")}");
+
+            //sweph.OnLoadFile += (s, e) => {
+            // Loading file
+            //};
+        }
+
+        private Stream SearchFile(string v)
+        {
+            throw new NotImplementedException();
         }
 
         private List<double> EcclipseList(DateTime startDate, DateTime endDate, List<double> eclDates)
