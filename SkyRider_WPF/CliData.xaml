@@ -40,7 +40,7 @@
         <Label Grid.Row="2" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Дата (LT)"/>
         <Label Grid.Row="3" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Время (LT)"/>
         <Label Grid.Row="4" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Место"/>
-        <Label Grid.Row="5" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Поправка (GMT-LT)"/>
+        <Label Grid.Row="5" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Поправка (GMT)"/>
         <Label Grid.Row="6" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Широта"/>
         <Label Grid.Row="7" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Долгота"/>
         <Label Grid.Row="8" Padding="5" Margin="5" FontFamily="Roboto" FontSize="18" Content="Примечание"/>

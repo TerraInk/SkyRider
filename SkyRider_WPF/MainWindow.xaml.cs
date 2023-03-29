@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Windows.Data;
 using System.Text;
 using System.IO;
+using System.Globalization;
 //using System.Windows.Forms;
 //using MySqlConnector;
 
@@ -73,7 +74,8 @@ namespace SkyRider_WPF
             }
 
             string sql = "SELECT rd_users.id, rd_users.fname, rd_users_data.birthday, " +
-                "rd_users_data.birthtime, rd_users_data.remark, rd_users_data.dateupd, rd_city.cityname, rd_city.longitude, rd_city.latitude " +
+                "rd_users_data.birthtime, rd_users_data.remark, rd_users_data.dateupd, " +
+                "rd_city.cityname, rd_city.longitude, rd_city.latitude, rd_city.gmt " +
                 "FROM rd_users JOIN rd_users_data ON rd_users.id=rd_users_data.user_id " +
                 "JOIN rd_city ON rd_users_data.city_id=rd_city.id WHERE rd_users.del<1";
             dtUsers = new DataTable();
@@ -278,10 +280,9 @@ namespace SkyRider_WPF
                 //document.Blocks.Add(paragraph);
                 //rtbGlobalEcl.Document = document;
 
-
-
+                //var y = usersGrid.Items.IndexOf(usersGrid.CurrentItem);
+                //DataRow dr = dtUsers.Rows[y];
                 
-
                 DateTime beginUtc, endUtc, ReJul;
 
                 //DateTime.UtcNow.AddYears(1);
@@ -294,10 +295,10 @@ namespace SkyRider_WPF
 
                 double[] tret = new double[10];
                 double cliJulday;
-                string clientName, merr = "";
-                int iftype = 0;
-                //string tmp;
-                var iOrbis = Convert.ToInt16(inpOrbis.Text);
+                double cliLat, cliLon;
+                string clientName, tmp, merr = "";
+                int cliGMT, iftype = 0;
+                short iOrbis = Convert.ToInt16(inpOrbis.Text);
 
                 // ******** Посчитаем данные выбранного клиента ********
 
@@ -310,13 +311,39 @@ namespace SkyRider_WPF
                 //MessageBox.Show(dr["date"].ToString());
 
                 clientName = ((DataRowView)usersGrid.SelectedItems[0]).Row[1].ToString();
+                //MessageBox.Show(((DataRowView)usersGrid.SelectedItems[0]).Row[5].ToString());
+                //cliLon = double.Parse(((DataRowView)usersGrid.SelectedItems[0]).Row[5].ToString());
+                //cliLat = double.Parse(((DataRowView)usersGrid.SelectedItems[0]).Row[6].ToString());
                 DateTime clientBDate;
-                clientBDate = (DateTime)((DataRowView)usersGrid.SelectedItems[0]).Row[2];
-                //tmp = (DateTime)((DataRowView)usersGrid.SelectedItems[0]).Row[3];
-                clientBDate += TimeSpan.Parse(((DataRowView)usersGrid.SelectedItems[0]).Row[3].ToString());
+                //clientBDate = (DateTime)((DataRowView)usersGrid.SelectedItems[0]).Row[2];
+                clientBDate = Convert.ToDateTime(dr["birthday"]);
 
+
+                tmp = clientBDate.ToString("g", CultureInfo.GetCultureInfo("ru-RU"));
+                MessageBox.Show(tmp);
+                //tmp = (DateTime)((DataRowView)usersGrid.SelectedItems[0]).Row[3];
+                //clientBDate += TimeSpan.Parse(((DataRowView)usersGrid.SelectedItems[0]).Row[3].ToString());
+                //clientBDate = Convert.ToDateTime( dr["birthtime"]);
+                tmp = dr["birthtime"].ToString();
+                clientBDate += TimeSpan.Parse( tmp);
+
+                
+
+                cliGMT = Convert.ToInt32(dr["gmt"]);
+
+                cliLat = Convert.ToDouble(dr["latitude"]);
+                cliLon = Convert.ToDouble(dr["longitude"]);
+
+                //MessageBox.Show(cliLat.ToString());
 
                 txtIndiEcl.Clear();
+
+                // ******** Отнимем поправку на gmt ********
+                //clientBDate += cliGMT;
+                
+                MessageBox.Show(clientBDate.ToString());
+                clientBDate.AddHours(-6);
+                MessageBox.Show(clientBDate.ToString());
 
                 cliJulday = Julie(clientBDate);
 
@@ -330,8 +357,9 @@ namespace SkyRider_WPF
                     swephcli.swe_set_ephe_path("e:\\ephe");
                     swephcli.OnLoadFile += Swephcli_OnLoadFile;
                     
+                    // ******** Планетки ********
 
-                    while (i < SwissEphNet.SwissEph.SE_PROSERPINA)
+                    while (i < SwissEphNet.SwissEph.SE_PHOLUS)
                     {
                         if (!(i == SwissEphNet.SwissEph.SE_EARTH))
                         {
@@ -339,12 +367,29 @@ namespace SkyRider_WPF
                             cliPlPos[i] = tret[0];
                             plnName = swephcli.swe_get_planet_name(i);
                             txtIndiEcl.AppendText(plnName + " - " + tret[0].ToString() + "\n");
-                            txtIndiEcl.AppendText(merr + "\n");
+                            //txtIndiEcl.AppendText(merr + "\n");
                             i++;
                         }
                         else i++;
 
                     }
+                    
+                    // ******** Домишки ********
+
+                    double[] hcusp = new double[13];
+                    double[] ascmc = new double[10];
+                    char hsys = char.Parse("P");
+                    int z;
+                    cliLat = 54.58;
+                    cliLon = 73.23;
+                    txtIndiEcl.AppendText(cliJulday.ToString() + "\n");
+                    z = swephcli.swe_houses(cliJulday, cliLat, cliLon, 'P', hcusp, ascmc);
+                    i = 0;
+                    for (i = 1; i <= 12; i++)
+                    {
+                        txtIndiEcl.AppendText("House №:" + i.ToString() + " " + hcusp[i].ToString() + "\n");
+                    }
+                    
                 }
 
 
@@ -498,9 +543,9 @@ namespace SkyRider_WPF
 
             }
 
-            jUTbegin = Julie((DateTime)ecldat1.SelectedDate);
-            jUTend = Julie((DateTime)ecldat2.SelectedDate);
-            eclDates.Add(-1);
+            //jUTbegin = Julie((DateTime)ecldat1.SelectedDate);
+            //jUTend = Julie((DateTime)ecldat2.SelectedDate);
+            //eclDates.Add(-1);
 
             // ******** Перебираем все лунные затмения ********
 
@@ -529,10 +574,37 @@ namespace SkyRider_WPF
             return eclDates;
         }
 
+
+        private double JulieUT(DateTime jUT)
+        {
+            using (var sweph = new SwissEphNet.SwissEph())
+            {
+                double[] tret = new double[2];
+                string merr = "";
+
+                var jday = Convert.ToInt16(jUT.Day);
+                var jmon = Convert.ToInt16(jUT.Month);
+                var jyear = Convert.ToInt16(jUT.Year);
+                var jhour = Convert.ToInt16(jUT.Hour);
+                var jmin = Convert.ToInt16(jUT.Minute);
+
+                //var jsec = 1;
+                //var jut = jhour + (jmin / 60.0) + (jsec / 3600.0);
+
+                //var JulianDateUT = sweph.swe_julday(jyear, jmon, jday, jut, 1);
+                int JulianDateUT = sweph.swe_utc_to_jd(jyear, jmon, jday, jhour, jmin, 0, SwissEphNet.SwissEph.SE_GREG_CAL, tret, ref merr);
+                //MessageBox.Show(merr);
+                return tret[1];
+                //return sweph.swe_julday
+            }
+        }
+
         private double Julie(DateTime jUT)
         {
             using (var sweph = new SwissEphNet.SwissEph())
             {
+                //double[] tret = new double[2];
+                //string merr = "";
 
                 var jday = Convert.ToInt16(jUT.Day);
                 var jmon = Convert.ToInt16(jUT.Month);
@@ -542,9 +614,13 @@ namespace SkyRider_WPF
 
                 var jsec = 1;
                 var jut = jhour + (jmin / 60.0) + (jsec / 3600.0);
+                //jut -= GMT;
 
                 //var JulianDateUT = sweph.swe_julday(jyear, jmon, jday, jut, 1);
+                //int JulianDateUT = sweph.swe_utc_to_jd(jyear, jmon, jday, jhour, jmin, 0, SwissEphNet.SwissEph.SE_GREG_CAL, tret, ref merr);
+                //MessageBox.Show(jut.ToString());
                 return sweph.swe_julday(jyear, jmon, jday, jut, 1);
+                //return sweph.swe_julday
             }
         }
 

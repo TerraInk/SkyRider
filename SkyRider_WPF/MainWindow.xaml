@@ -155,7 +155,7 @@
                         </DataGridTextColumn>
 
 
-                        <DataGridTextColumn Header="GMT" Width="120" Binding="{Binding Path=birthtime}">
+                        <DataGridTextColumn Header="Время" Width="120" Binding="{Binding Path=birthtime}">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="HorizontalContentAlignment" Value="Center" />
